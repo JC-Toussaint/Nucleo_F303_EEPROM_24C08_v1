@@ -1,0 +1,10 @@
+Pour forcer l'initialisation du bus I2C
+Dans Core\Src\stm32f4xx_hal_msp.c, il faut compléter la fonction
+void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
+
+  /* USER CODE BEGIN I2C1_MspInit 1 */
+    __HAL_RCC_I2C1_FORCE_RESET();
+    HAL_Delay(2);
+    __HAL_RCC_I2C1_RELEASE_RESET();
+    hi2c->State = HAL_I2C_STATE_RESET;
+  /* USER CODE END I2C1_MspInit 1 */
