@@ -103,7 +103,7 @@ int main(void)
 
   if (ee24_isConnected())
   {
-	  ee24_write(0, data, 1024, 1000);
+	  ee24_write(0, data, 1024, EE24_TIMEOUT);
   }
 
   /* Reset the memory bloc */
@@ -111,7 +111,7 @@ int main(void)
 
   if (ee24_isConnected())
   {
-    ee24_read(0, data, 1024, 1000);
+    ee24_read(0, data, 1024, EE24_TIMEOUT);
   }
 
   __NOP();

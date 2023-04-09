@@ -59,7 +59,7 @@ bool ee24_write(uint16_t address, uint8_t *data, size_t len, uint32_t timeout)
     #endif
     {
       ee24_delay(10);
-      len -= w;
+      len  -= w;
       data += w;
       address += w;
       if (len == 0)

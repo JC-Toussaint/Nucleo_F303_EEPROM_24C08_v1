@@ -34,9 +34,10 @@ extern "C" {
 #include <stddef.h>
 #include "ee24Config.h"
 
+#define EE24_TIMEOUT 1000
 bool    ee24_isConnected(void);
 bool    ee24_write(uint16_t address, uint8_t *data, size_t lenInBytes, uint32_t timeout);	
-bool    ee24_read(uint16_t address, uint8_t *data, size_t lenInBytes, uint32_t timeout);
+bool    ee24_read (uint16_t address, uint8_t *data, size_t lenInBytes, uint32_t timeout);
 bool    ee24_eraseChip(void);
 
 #ifdef __cplusplus
