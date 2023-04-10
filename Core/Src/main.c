@@ -25,10 +25,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
+typedef union {
+  float f;
+  uint8_t u8[4];
+  uint32_t u32;
+} FloatHex;
 
 /* USER CODE END PTD */
 
@@ -106,6 +113,12 @@ int main(void)
 	  ee24_write(0, data, 1024, EE24_TIMEOUT);
   }
 
+  /* write pi number at addresses 0 and 3*/
+  FloatHex fh;
+  fh.f=M_PI;
+  ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
+  ee24_write(3, fh.u8, 4, EE24_TIMEOUT);
+
   /* Reset the memory bloc */
   memset( data, 0, 1024 );
 
@@ -114,6 +127,10 @@ int main(void)
     ee24_read(0, data, 1024, EE24_TIMEOUT);
   }
 
+  /* read a float number at addresses 0 and 3*/
+  fh.f=0.;
+  ee24_read(0, fh.u8, 4, EE24_TIMEOUT);
+  ee24_read(3, fh.u8, 4, EE24_TIMEOUT);
   __NOP();
 
   /* USER CODE END 2 */
