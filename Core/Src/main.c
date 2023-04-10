@@ -79,7 +79,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 	uint8_t data[1024];
-
+	FloatHex fh;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -104,6 +104,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  #define nREADONLY
+  #ifndef READONLY
   for (int i=0; i<1024; i++){
 	  data[i]=i; // i mod 256 because data are stored in an 8-bit array
   }
@@ -111,13 +113,14 @@ int main(void)
   if (ee24_isConnected())
   {
 	  ee24_write(0, data, 1024, EE24_TIMEOUT);
+
+	  /* write pi number at addresses 0 and 3*/
+	  fh.f=M_PI;
+	  ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
+	  ee24_write(4, fh.u8, 4, EE24_TIMEOUT);
   }
 
-  /* write pi number at addresses 0 and 3*/
-  FloatHex fh;
-  fh.f=M_PI;
-  ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
-  ee24_write(3, fh.u8, 4, EE24_TIMEOUT);
+#endif
 
   /* Reset the memory bloc */
   memset( data, 0, 1024 );
@@ -129,8 +132,12 @@ int main(void)
 
   /* read a float number at addresses 0 and 3*/
   fh.f=0.;
+  if (ee24_isConnected())
+  {
   ee24_read(0, fh.u8, 4, EE24_TIMEOUT);
-  ee24_read(3, fh.u8, 4, EE24_TIMEOUT);
+  ee24_read(4, fh.u8, 4, EE24_TIMEOUT);
+  }
+
   __NOP();
 
   /* USER CODE END 2 */
