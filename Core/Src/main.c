@@ -41,6 +41,7 @@ typedef union {
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define DATA_SIZE 32
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -78,7 +79,8 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t data[1024];
+	bool status=false;
+	uint8_t data[DATA_SIZE];
 	FloatHex fh;
   /* USER CODE END 1 */
 
@@ -106,36 +108,48 @@ int main(void)
 
   #define nREADONLY
   #ifndef READONLY
-  for (int i=0; i<1024; i++){
-	  data[i]=i; // i mod 256 because data are stored in an 8-bit array
+  for (int i=0; i<DATA_SIZE; i++){
+	  data[i]=255-i; // i mod 256 because data are stored in an 8-bit array
   }
 
   if (ee24_isConnected())
   {
-	  ee24_write(0, data, 1024, EE24_TIMEOUT);
+	  status=ee24_write(0, data, DATA_SIZE, EE24_TIMEOUT);
+	  if (status==false) Error_Handler();
 
-	  /* write pi number at addresses 0 and 3*/
+//	  /* write pi number at addresses 0 and 4*/
+//	  fh.f=16*M_PI;
+//	  status=ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
+//	  if (status==false) Error_Handler();
+//
 	  fh.f=M_PI;
-	  ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
-	  ee24_write(4, fh.u8, 4, EE24_TIMEOUT);
+	  status=ee24_write(4, fh.u8, 4, EE24_TIMEOUT);
+	  if (status==false) Error_Handler();
+//
+//	  fh.f=M_PI;
+//	  status=ee24_write(0, fh.u8, 4, EE24_TIMEOUT);
+//	  if (status==false) Error_Handler();
   }
 
 #endif
 
   /* Reset the memory bloc */
-  memset( data, 0, 1024 );
+  memset( data, 0, DATA_SIZE );
 
   if (ee24_isConnected())
   {
-    ee24_read(0, data, 1024, EE24_TIMEOUT);
+	  status=ee24_read(0, data, DATA_SIZE, EE24_TIMEOUT);
+	  if (status==false) Error_Handler();
   }
 
   /* read a float number at addresses 0 and 3*/
   fh.f=0.;
   if (ee24_isConnected())
   {
-  ee24_read(0, fh.u8, 4, EE24_TIMEOUT);
-  ee24_read(4, fh.u8, 4, EE24_TIMEOUT);
+	  status=ee24_read(0, fh.u8, 4, EE24_TIMEOUT);
+	  if (status==false) Error_Handler();
+	  status=ee24_read(4, fh.u8, 4, EE24_TIMEOUT);
+	  if (status==false) Error_Handler();
   }
 
   __NOP();
